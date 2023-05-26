@@ -16,13 +16,19 @@ protocol RickMortyOutput {
 final class RickMortyVC: UIViewController {
     
     //MARK: - Properties
-    private let titleLabel = UILabel()
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 26, weight: .bold)
+        label.text = "Rick&Morty"
+        return label
+    }()
+    
     private let tableView = UITableView()
     private let indicator = UIActivityIndicatorView()
     
     private lazy  var results: [Result] = []
     lazy var viewModel: IRickMortyViewModel = RickMortyViewModel()
-                      
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,13 +38,13 @@ final class RickMortyVC: UIViewController {
     }
     
     private func configureView() {
-        view.addSubview(titleLabel)
         view.addSubview(tableView)
+        view.addSubview(titleLabel)
         view.addSubview(indicator)
         
         drawDesign()
-        makeLabel()
         makeTableView()
+        makeTitleLabel()
         makeIndicator()
         
     }
@@ -48,8 +54,6 @@ final class RickMortyVC: UIViewController {
         tableView.dataSource = self
         tableView.register(RMTableViewCell.self, forCellReuseIdentifier: RMTableViewCell.identifier)
         
-        titleLabel.font = .boldSystemFont(ofSize: 20)
-        titleLabel.text = "Rick Morty"
         indicator.color = .red
         indicator.startAnimating()
     }
@@ -93,26 +97,22 @@ extension RickMortyVC {
     
     private func makeTableView() {
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
-            make.bottom.equalToSuperview()
-            make.left.right.equalTo(titleLabel)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.right.left.bottom.equalToSuperview()
         }
     }
     
-    private func makeLabel() {
+    private func makeTitleLabel() {
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.left.equalTo(view).offset(10)
-            make.right.equalTo(view).offset(-10)
-            make.height.greaterThanOrEqualTo(10)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.centerX.equalTo(view)
         }
     }
     
     private func makeIndicator() {
         indicator.snp.makeConstraints { make in
-            make.height.equalTo(titleLabel)
             make.right.equalTo(view).offset(-10)
-            make.top.equalTo(titleLabel)
+            make.top.equalTo(tableView.snp.top)
         }
     }
 }
